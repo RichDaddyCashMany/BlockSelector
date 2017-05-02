@@ -21,24 +21,27 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    // 所有需要传SEL参数的地方都可以用[self action:^{}]来代替
-    
     // 按钮点击
-    [self.btn addTarget:self action:[self action:^{
-        NSLog(@"btn clicked");
+    [self.btn addTarget:self action:[self selectorBlock:^(id arg) {
+        NSLog(@"clicked %@", arg);
     }] forControlEvents:UIControlEventTouchUpInside];
-    
+
     // 手势事件
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:[self action:^{
-        NSLog(@"tap");
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:[self selectorBlock:^(id arg) {
+        NSLog(@"tap %@", arg);
     }]];
     [self.label addGestureRecognizer:tap];
 
     // 定时器事件
-    NSTimer *timer = [NSTimer timerWithTimeInterval:1.0 target:self selector:[self action:^{
-        NSLog(@"timer run");
+    NSTimer *timer = [NSTimer timerWithTimeInterval:1.0 target:self selector:[self selectorBlock:^(id arg) {
+        NSLog(@"timer run %@", arg);
     }] userInfo:nil repeats:NO];
     [[NSRunLoop mainRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
+    
+    // 通知
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:[self selectorBlock:^(id arg) {
+        NSLog(@"resign active %@", arg);
+    }] name:UIApplicationWillResignActiveNotification object:nil];
 }
 
 @end

@@ -6,18 +6,16 @@
 //  Copyright © 2017年 HJaycee. All rights reserved.
 //
 
-/*
- 这个分类作用是用`block`来代替`@selector`，但是注意没有target和sender。
- 使用示范：
- [self.btn1 addTarget:self action:[self action:^{
-    NSLog(@"1");
- }] forControlEvents:UIControlEventTouchUpInside];
- */
-
 #import <Foundation/Foundation.h>
 
 @interface NSObject (BlockSEL)
 
-- (SEL)action:(void (^)(void))action;
+/**
+ 用`block`来代替`@selector()`
+
+ @param block 回调的arg是事件自动传过来的对象，比如`NSNotification`。
+ @return SEL
+ */
+- (SEL)selectorBlock:(void (^)(id arg))block;
 
 @end
