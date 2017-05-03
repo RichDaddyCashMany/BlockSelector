@@ -1,6 +1,6 @@
 //
 //  NSObject+BlockSEL.m
-//  
+//
 //
 //  Created by HJaycee on 2017/4/28.
 //  Copyright © 2017年 HJaycee. All rights reserved.
@@ -11,7 +11,10 @@
 
 @implementation NSObject (BlockSEL)
 
-- (SEL)selectorBlock:(void (^)(id))block {
+- (SEL)selectorBlock:(void (^)(id, id))block {
+    if (!block) {
+        [NSException raise:@"block can not be nil" format:@"%@ selectorBlock error", self];
+    }
     NSString *selName = [NSString stringWithFormat:@"selector_%p:", block];
     SEL sel = NSSelectorFromString(selName);
     class_addMethod([self class], sel, (IMP)selectorImp, "v@:@");
@@ -20,8 +23,12 @@
 }
 
 static void selectorImp(id self, SEL _cmd, id arg) {
-    void (^block)(id arg) = objc_getAssociatedObject(self, _cmd);
-    if (block) block(arg);
+    callback block = objc_getAssociatedObject(self, _cmd);
+    __weak typeof(self) weakSelf = self;
+    if (block) {
+        block(weakSelf, arg);
+    }
 }
+
 
 @end

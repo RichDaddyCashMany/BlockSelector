@@ -1,32 +1,31 @@
 # BlockSelector
-This is a `category` for replacing `@selector()` with a `block`.
+This is a `category` for replacing `@selector()` with `block`.
 
 
 ## Usage
 
 ```objc
 // button
-[self.btn addTarget:self action:[self selectorBlock:^(id arg) {
-    NSLog(@"clicked %@", arg);
+[self.btn addTarget:self action:[self selectorBlock:^(ViewController *weakSelf, id arg) {
+NSLog(@"clicked %@", arg);
+// break retain cycle
+weakSelf.view.backgroundColor = [UIColor lightGrayColor];
 }] forControlEvents:UIControlEventTouchUpInside];
-```
-```objc
+
 // gesture
-UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:[self selectorBlock:^(id arg) {
-    NSLog(@"tap %@", arg);
+UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:[self selectorBlock:^(id weakSelf, id arg) {
+NSLog(@"tap %@", arg);
 }]];
 [self.label addGestureRecognizer:tap];
-```
-```objc
+
 // timer
-NSTimer *timer = [NSTimer timerWithTimeInterval:1.0 target:self selector:[self selectorBlock:^(id arg) {
-    NSLog(@"timer run %@", arg);
+NSTimer *timer = [NSTimer timerWithTimeInterval:1.0 target:self selector:[self selectorBlock:^(id weakSelf, id arg) {
+NSLog(@"timer run %@", arg);
 }] userInfo:nil repeats:NO];
 [[NSRunLoop mainRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
-```
-```objc
+
 // notification
-[[NSNotificationCenter defaultCenter] addObserver:self selector:[self selectorBlock:^(id arg) {
-    NSLog(@"resign active %@", arg);
+[[NSNotificationCenter defaultCenter] addObserver:self selector:[self selectorBlock:^(id weakSelf, id arg) {
+NSLog(@"resign active %@", arg);
 }] name:UIApplicationWillResignActiveNotification object:nil];
 ```
